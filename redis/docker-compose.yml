@@ -1,0 +1,11 @@
+version: "3"
+services:
+  redis:
+    restart: always
+    container_name: redis-server
+    image: "redis"
+    hostname: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "6379:6379"
