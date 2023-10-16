@@ -6,7 +6,7 @@ spring:
   application:
     name: spring-webflux-guide
   webflux:
-    base-path: /api
+    base-path: /api/v1/
   cache:
     type: redis
   data:
