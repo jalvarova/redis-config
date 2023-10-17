@@ -9,6 +9,11 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @Slf4j
 public class RedisCacheService {
@@ -44,5 +49,11 @@ public class RedisCacheService {
 
     public Flux<RedisModel> getAllKeys(ServerRequest request) {
         return redisOperator.getAllKeys();
+    }
+
+    public Flux<RedisModel> getAllByKeys(ServerRequest request) {
+        return request.bodyToMono(String[].class)
+                .flux()
+                .flatMap(model -> redisOperator.getAllCacheByKeys(Arrays.asList(model)));
     }
 }

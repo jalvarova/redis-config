@@ -59,4 +59,10 @@ public class RedisCacheHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(redisCacheService.getAllKeys(request), RedisModel.class);
     }
+    public Mono<ServerResponse> getAllByKeys(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.getAllByKeys(request), RedisModel.class);
+    }
 }

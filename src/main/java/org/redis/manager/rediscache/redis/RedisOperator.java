@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,13 +54,15 @@ public class RedisOperator {
                 .map(aBoolean -> "");
     }
 
-    public Mono<String> getAllCacheByKeys(List<String> keys) {
-        return operationsL.
-                opsForValue()
+    public Flux<RedisModel> getAllCacheByKeys(List<String> keys) {
+        List<RedisModel> models = new ArrayList<>();
+        return operationsL
+                .opsForValue()
                 .multiGet(keys)
-                .map(str -> str.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(",")));
+                .flatMapIterable(str -> {
+                    str.forEach(s -> models.add(RedisModel.builder().value(s).build()));
+                    return models;
+                });
     }
 
     public Flux<RedisModel> getAllCache() {
@@ -67,6 +70,7 @@ public class RedisOperator {
                 .keys("walavo:*")
                 .flatMap(key -> getCache(key).map(value -> RedisModel.builder().value(value).key(key).build()));
     }
+
     public Flux<RedisModel> getAllKeys() {
         return operationsL
                 .keys("walavo:*")
