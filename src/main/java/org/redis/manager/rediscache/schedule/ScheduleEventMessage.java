@@ -27,7 +27,7 @@ public class ScheduleEventMessage {
     @Autowired
     private ObjectMapper convert;
 
-    @Scheduled(cron = "*/2 * * * * ?")
+    //@Scheduled(cron = "*/2 * * * * ?")
     public void eventMessageCache() throws JsonProcessingException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Date now = new Date();
@@ -35,9 +35,9 @@ public class ScheduleEventMessage {
         log.info("Java cron job expression:: " + strDate);
         String generateWord = generateRandomLetters();
         log.info("Palabras " + generateWord);
-        String key = UUID.randomUUID().toString();
+        String key = "walavo:" + UUID.randomUUID().toString();
 
-        publish.sendMessage(convert.writeValueAsString(Map.of(key, generateWord)));
+        publish.sendMessage(convert.writeValueAsString(Map.of("key", key, "value", generateWord)));
     }
 
     private String generateRandomLetters() {

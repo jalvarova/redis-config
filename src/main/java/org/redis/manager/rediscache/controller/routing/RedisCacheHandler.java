@@ -1,6 +1,7 @@
 package org.redis.manager.rediscache.controller.routing;
 
 import lombok.RequiredArgsConstructor;
+import org.redis.manager.rediscache.model.RedisModel;
 import org.redis.manager.rediscache.service.RedisCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,34 +22,41 @@ public class RedisCacheHandler {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(redisCacheService.getCache(), String.class);
+                .body(redisCacheService.getCache(request), String.class);
     }
 
     public Mono<ServerResponse> createCache(ServerRequest request) {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(redisCacheService.createCache(), String.class);
+                .body(redisCacheService.createCache(request), String.class);
     }
 
     public Mono<ServerResponse> updateCache(ServerRequest request) {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(redisCacheService.updateCache(), String.class);
+                .body(redisCacheService.updateCache(request), String.class);
     }
 
     public Mono<ServerResponse> deleteCache(ServerRequest request) {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(redisCacheService.deleteCache(), String.class);
+                .body(redisCacheService.deleteCache(request), String.class);
     }
 
     public Mono<ServerResponse> getAllCache(ServerRequest request) {
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(redisCacheService.getAllCache(), String.class);
+                .body(redisCacheService.getAllCache(request), RedisModel.class);
+    }
+
+    public Mono<ServerResponse> getAllKeys(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.getAllKeys(request), RedisModel.class);
     }
 }
