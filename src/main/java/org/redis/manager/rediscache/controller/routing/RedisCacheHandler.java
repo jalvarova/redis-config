@@ -65,4 +65,18 @@ public class RedisCacheHandler {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(redisCacheService.getAllByKeys(request), RedisModel.class);
     }
+
+    public Mono<ServerResponse> deleteAllCache(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.deleteAllCache(request), RedisModel.class);
+    }
+
+    public Mono<ServerResponse> getSizeCache(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.getSizeCache(request), RedisModel.class);
+    }
 }

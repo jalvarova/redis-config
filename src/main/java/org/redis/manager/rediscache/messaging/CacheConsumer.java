@@ -21,7 +21,7 @@ public class CacheConsumer {
 
     @RabbitListener(queues = {"${spring.rabbitmq.queue.name}"})
     void consumeMessageCache(String body) throws JsonProcessingException {
-        log.info("Receive message" + body);
+        log.info("Receive message " + body);
         RedisModel redisModel = convert.readValue(body, RedisModel.class);
         redisOperator.createCache(redisModel.getKey(), redisModel.getValue()).block();
     }

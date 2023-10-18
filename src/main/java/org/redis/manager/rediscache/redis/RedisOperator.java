@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.ReactiveServerCommands;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -75,5 +75,13 @@ public class RedisOperator {
         return operationsL
                 .keys("walavo:*")
                 .map(key -> RedisModel.builder().key(key).build());
+    }
+
+    public Mono<String> deleteAllCache() {
+        return redis.getConnectionFactory().getReactiveConnection().serverCommands().flushAll();
+    }
+
+    public Mono<String> getSizeCache() {
+        return redis.getConnectionFactory().getReactiveConnection().serverCommands().dbSize().map(String::valueOf);
     }
 }
