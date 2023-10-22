@@ -15,43 +15,42 @@ import java.util.Arrays;
 @Slf4j
 public class RedisCacheService {
 
+    private static final String PARAMETER_KEY = "key";
     @Autowired
     private RedisOperator redisOperator;
 
     public Mono<String> getCache(ServerRequest request) {
-        String key = request.pathVariable("key");
+        String key = request.pathVariable(PARAMETER_KEY);
         return redisOperator.getCache(key);
     }
 
     public Mono<String> createCache(ServerRequest request) {
-        return request.bodyToMono(RedisModel.class)
-                .flatMap(model -> redisOperator.createCache(model.getKey(), model.getValue()));
+        return request.bodyToMono(RedisModel.class).flatMap(model -> redisOperator.createCache(model.getKey(), model.getValue()));
 
     }
 
 
     public Mono<String> updateCache(ServerRequest request) {
-        return request.bodyToMono(RedisModel.class)
-                .flatMap(model -> redisOperator.updateCache(model.getKey(), model.getValue()));
+        return request.bodyToMono(RedisModel.class).flatMap(model -> redisOperator.updateCache(model.getKey(), model.getValue()));
     }
 
     public Mono<String> deleteCache(ServerRequest request) {
-        String key = request.pathVariable("key");
+        String key = request.pathVariable(PARAMETER_KEY);
         return redisOperator.deleteCache(key);
     }
 
     public Flux<RedisModel> getAllCache(ServerRequest request) {
-        return redisOperator.getAllCache();
+        String key = request.pathVariable(PARAMETER_KEY);
+        return redisOperator.getAllCache(key);
     }
 
     public Flux<RedisModel> getAllKeys(ServerRequest request) {
-        return redisOperator.getAllKeys();
+        String key = request.pathVariable(PARAMETER_KEY);
+        return redisOperator.getAllKeys(key);
     }
 
     public Flux<RedisModel> getAllByKeys(ServerRequest request) {
-        return request.bodyToMono(String[].class)
-                .flux()
-                .flatMap(model -> redisOperator.getAllCacheByKeys(Arrays.asList(model)));
+        return request.bodyToMono(String[].class).flux().flatMap(model -> redisOperator.getAllCacheByKeys(Arrays.asList(model)));
     }
 
     public Mono<String> deleteAllCache(ServerRequest request) {

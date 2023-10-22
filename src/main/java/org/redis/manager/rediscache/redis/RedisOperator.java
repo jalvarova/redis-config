@@ -65,15 +65,15 @@ public class RedisOperator {
                 });
     }
 
-    public Flux<RedisModel> getAllCache() {
+    public Flux<RedisModel> getAllCache(String keyPattern) {
         return operationsL
-                .keys("walavo:*")
+                .keys(keyPattern.concat(":*"))
                 .flatMap(key -> getCache(key).map(value -> RedisModel.builder().value(value).key(key).build()));
     }
 
-    public Flux<RedisModel> getAllKeys() {
+    public Flux<RedisModel> getAllKeys(String keyPattern) {
         return operationsL
-                .keys("walavo:*")
+                .keys(keyPattern.concat(":*"))
                 .map(key -> RedisModel.builder().key(key).build());
     }
 

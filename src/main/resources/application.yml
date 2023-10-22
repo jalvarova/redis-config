@@ -5,7 +5,7 @@ server:
 spring:
   application:
     name: spring-webflux-guide
-  webflux:
+  web-flux:
     base-path: /api/v1/
   cache:
     type: redis
@@ -27,7 +27,7 @@ spring:
 logging:
   level:
     io:
-      reflectoring: DEBUG
+      reflector: DEBUG
     org:
       springframework:
         web: INFO
@@ -39,3 +39,6 @@ logging:
       netty:
         http:
           client: DEBUG
+
+schedule:
+  cron: "*/10 * * * * ?"
