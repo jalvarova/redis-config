@@ -23,6 +23,8 @@ spring:
     password: password
     queue:
       name: value-cache-q
+    exchange: "example"
+    routing-key: "#"
 
 logging:
   level:

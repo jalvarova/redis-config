@@ -1,10 +1,8 @@
 package org.redis.manager.rediscache.redis;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.ReactiveServerCommands;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -22,9 +20,6 @@ public class RedisOperator {
 
     @Autowired
     private ReactiveRedisOperations<String, String> operationsL;
-
-    @Autowired
-    private ObjectMapper convert;
 
     public Mono<String> getCache(String key) {
         return operationsL
