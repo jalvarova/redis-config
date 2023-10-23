@@ -23,6 +23,7 @@ public class CacheConsumer {
     void consumeMessageCache(String body) throws JsonProcessingException {
         log.info("Receive message " + body);
         RedisModel redisModel = convert.readValue(body, RedisModel.class);
+        redisOperator.getSizeCache().map(s -> {log.info("Size cache "+ s); return s;}).block();
         redisOperator.createCache(redisModel.getKey(), redisModel.getValue()).block();
     }
 }

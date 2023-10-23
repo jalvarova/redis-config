@@ -29,6 +29,10 @@ public class RouterController {
                 .andRoute(POST("/caches/keys").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getAllByKeys)
                 .andRoute(GET("/caches/{key}").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getAllCache)
                 .andRoute(DELETE("/caches").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::deleteAllCache)
-                .andRoute(GET("/caches/db").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getSizeCache);
+                .andRoute(GET("/db").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getSizeCache)
+                .andRoute(GET("/info").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getPropertiesCache)
+                .andRoute(GET("/time").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getTimeCache)
+                .andRoute(GET("/clients").and(accept(MediaType.APPLICATION_JSON)), redisCacheHandler::getClientCache);
+
     }
 }

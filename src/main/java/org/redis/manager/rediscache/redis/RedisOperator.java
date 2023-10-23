@@ -5,12 +5,15 @@ import org.redis.manager.rediscache.model.RedisModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.types.RedisClientInfo;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
@@ -78,5 +81,18 @@ public class RedisOperator {
 
     public Mono<String> getSizeCache() {
         return redis.getConnectionFactory().getReactiveConnection().serverCommands().dbSize().map(String::valueOf);
+    }
+    public Mono<Properties> getInfoCache() {
+        return redis.getConnectionFactory().getReactiveConnection().serverCommands().info();
+    }
+
+    public Mono<String> getTimeCache() {
+        return redis.getConnectionFactory().getReactiveConnection().serverCommands().time(TimeUnit.MILLISECONDS)
+                .map(aLong -> (aLong/1000)%60)
+                .map(String::valueOf);
+    }
+
+    public Flux<RedisClientInfo> getClientCache() {
+        return redis.getConnectionFactory().getReactiveConnection().serverCommands().getClientList();
     }
 }

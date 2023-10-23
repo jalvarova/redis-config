@@ -4,11 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.redis.manager.rediscache.service.RedisCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.types.RedisClientInfo;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+
+import java.util.Properties;
 
 
 @Component
@@ -78,5 +81,26 @@ public class RedisCacheHandler {
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(redisCacheService.getSizeCache(request), RedisModel.class);
+    }
+
+    public Mono<ServerResponse> getTimeCache(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.getTimeCache(request), String.class);
+    }
+
+    public Mono<ServerResponse> getPropertiesCache(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.getPropertiesCache(request), Properties.class);
+    }
+
+    public Mono<ServerResponse> getClientCache(ServerRequest request) {
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(redisCacheService.getClientCache(request), RedisClientInfo.class);
     }
 }

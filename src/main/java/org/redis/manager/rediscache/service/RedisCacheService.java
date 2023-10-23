@@ -4,12 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.redis.manager.rediscache.redis.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.types.RedisClientInfo;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.Properties;
 
 @Service
 @Slf4j
@@ -25,13 +27,17 @@ public class RedisCacheService {
     }
 
     public Mono<String> createCache(ServerRequest request) {
-        return request.bodyToMono(RedisModel.class).flatMap(model -> redisOperator.createCache(model.getKey(), model.getValue()));
+        return request
+                .bodyToMono(RedisModel.class)
+                .flatMap(model -> redisOperator.createCache(model.getKey(), model.getValue()));
 
     }
 
 
     public Mono<String> updateCache(ServerRequest request) {
-        return request.bodyToMono(RedisModel.class).flatMap(model -> redisOperator.updateCache(model.getKey(), model.getValue()));
+        return request
+                .bodyToMono(RedisModel.class)
+                .flatMap(model -> redisOperator.updateCache(model.getKey(), model.getValue()));
     }
 
     public Mono<String> deleteCache(ServerRequest request) {
@@ -50,7 +56,10 @@ public class RedisCacheService {
     }
 
     public Flux<RedisModel> getAllByKeys(ServerRequest request) {
-        return request.bodyToMono(String[].class).flux().flatMap(model -> redisOperator.getAllCacheByKeys(Arrays.asList(model)));
+        return request
+                .bodyToMono(String[].class)
+                .flux()
+                .flatMap(model -> redisOperator.getAllCacheByKeys(Arrays.asList(model)));
     }
 
     public Mono<String> deleteAllCache(ServerRequest request) {
@@ -60,4 +69,17 @@ public class RedisCacheService {
     public Mono<String> getSizeCache(ServerRequest request) {
         return redisOperator.getSizeCache();
     }
+
+    public Mono<Properties> getPropertiesCache(ServerRequest request) {
+        return redisOperator.getInfoCache();
+    }
+
+    public Mono<String> getTimeCache(ServerRequest request) {
+        return redisOperator.getTimeCache();
+    }
+
+    public Flux<RedisClientInfo> getClientCache(ServerRequest request) {
+        return redisOperator.getClientCache();
+    }
+
 }
