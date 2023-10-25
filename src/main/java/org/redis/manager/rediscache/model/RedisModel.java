@@ -11,6 +11,8 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RedisModel {
 
+    private String keyPattern;
+
     private String key;
 
     private String value;

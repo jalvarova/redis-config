@@ -5,6 +5,7 @@ import org.redis.manager.rediscache.model.RedisModel;
 import org.redis.manager.rediscache.service.RedisCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.types.RedisClientInfo;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -30,7 +31,7 @@ public class RedisCacheHandler {
 
     public Mono<ServerResponse> createCache(ServerRequest request) {
         return ServerResponse
-                .ok()
+                .status(HttpStatusCode.valueOf(204))
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(redisCacheService.createCache(request), String.class);
     }

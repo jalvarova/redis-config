@@ -1,6 +1,7 @@
 package org.redis.manager.rediscache.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.redis.manager.rediscache.exception.NotFoundException;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.redis.manager.rediscache.redis.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +13,61 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Properties;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class RedisCacheService {
 
     private static final String PARAMETER_KEY = "key";
+    private static final String PARAMETER_KEY_PATTERN = "keyPattern";
     @Autowired
     private RedisOperator redisOperator;
 
     public Mono<String> getCache(ServerRequest request) {
-        String key = request.pathVariable(PARAMETER_KEY);
-        return redisOperator.getCache(key);
+        String keyPattern = request.queryParam(PARAMETER_KEY_PATTERN).get();
+        String key = request.queryParam(PARAMETER_KEY).get();
+        String keyCache = keyPattern.concat(":").concat(key);
+        return redisOperator.getCache(keyCache)
+                .switchIfEmpty(Mono.error(() -> new NotFoundException(keyCache)));
     }
 
     public Mono<String> createCache(ServerRequest request) {
         return request
                 .bodyToMono(RedisModel.class)
-                .flatMap(model -> redisOperator.createCache(model.getKey(), model.getValue()));
+                .flatMap(model ->
+                        redisOperator.createCache(model.getKey().concat(":").concat(UUID.randomUUID().toString()), model.getValue())
+                );
 
     }
-
 
     public Mono<String> updateCache(ServerRequest request) {
         return request
                 .bodyToMono(RedisModel.class)
-                .flatMap(model -> redisOperator.updateCache(model.getKey(), model.getValue()));
+                .flatMap(model -> {
+                            String keyCache = model.getKeyPattern().concat(":").concat(model.getKey());
+                            return redisOperator.updateCache(keyCache, model.getValue())
+                                    .switchIfEmpty(Mono.error(() -> new NotFoundException(keyCache)));
+                        }
+                );
     }
 
     public Mono<String> deleteCache(ServerRequest request) {
+        String keyPattern = request.pathVariable(PARAMETER_KEY_PATTERN);
         String key = request.pathVariable(PARAMETER_KEY);
-        return redisOperator.deleteCache(key);
+        String keyCache = keyPattern.concat(":").concat(key);
+        return redisOperator.deleteCache(keyCache)
+                .switchIfEmpty(Mono.error(() -> new NotFoundException(keyCache)));
     }
 
     public Flux<RedisModel> getAllCache(ServerRequest request) {
         String key = request.pathVariable(PARAMETER_KEY);
-        return redisOperator.getAllCache(key);
+        return redisOperator.getAllCache(key.concat(":*"));
     }
 
     public Flux<RedisModel> getAllKeys(ServerRequest request) {
         String key = request.pathVariable(PARAMETER_KEY);
-        return redisOperator.getAllKeys(key);
+        return redisOperator.getAllKeys(key.concat(":*"));
     }
 
     public Flux<RedisModel> getAllByKeys(ServerRequest request) {

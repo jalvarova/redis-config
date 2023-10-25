@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import static org.redis.manager.rediscache.util.CacheUtil.generateRandomLetters;
+
 @Component
 @Slf4j
 public class RedisOperator {
@@ -27,13 +29,13 @@ public class RedisOperator {
     public Mono<String> getCache(String key) {
         return operationsL
                 .opsForValue()
-                .get("walavo:".concat(key));
+                .get(key);
     }
 
     public Mono<String> createCache(String key, String value) {
         return operationsL
                 .opsForValue()
-                .set(key, value)
+                .set(key, generateRandomLetters())
                 .map(aBoolean -> "");
 
     }
@@ -41,15 +43,18 @@ public class RedisOperator {
     public Mono<String> updateCache(String key, String value) {
         return operationsL
                 .opsForValue()
-                .getAndSet(key, value)
-                .map(aBoolean -> "");
+                .get(key)
+                .switchIfEmpty(Mono.empty())
+                .flatMap(s -> operationsL
+                        .opsForValue().set(key, value)).map(aBoolean -> value);
+
     }
 
     public Mono<String> deleteCache(String key) {
         return operationsL
                 .opsForValue()
                 .delete(key)
-                .map(aBoolean -> "");
+                .flatMap(aBoolean -> aBoolean ? Mono.just(key) : Mono.empty());
     }
 
     public Flux<RedisModel> getAllCacheByKeys(List<String> keys) {
@@ -65,13 +70,13 @@ public class RedisOperator {
 
     public Flux<RedisModel> getAllCache(String keyPattern) {
         return operationsL
-                .keys(keyPattern.concat(":*"))
+                .keys(keyPattern)
                 .flatMap(key -> getCache(key).map(value -> RedisModel.builder().value(value).key(key).build()));
     }
 
     public Flux<RedisModel> getAllKeys(String keyPattern) {
         return operationsL
-                .keys(keyPattern.concat(":*"))
+                .keys(keyPattern)
                 .map(key -> RedisModel.builder().key(key).build());
     }
 
@@ -82,13 +87,14 @@ public class RedisOperator {
     public Mono<String> getSizeCache() {
         return redis.getConnectionFactory().getReactiveConnection().serverCommands().dbSize().map(String::valueOf);
     }
+
     public Mono<Properties> getInfoCache() {
         return redis.getConnectionFactory().getReactiveConnection().serverCommands().info();
     }
 
     public Mono<String> getTimeCache() {
         return redis.getConnectionFactory().getReactiveConnection().serverCommands().time(TimeUnit.MILLISECONDS)
-                .map(aLong -> (aLong/1000)%60)
+                .map(aLong -> (aLong / 1000) % 60)
                 .map(String::valueOf);
     }
 
