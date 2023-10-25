@@ -12,10 +12,9 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
-import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static org.redis.manager.rediscache.util.CacheUtil.generateRandomLetters;
 
 @EnableScheduling
 @Slf4j
@@ -38,18 +37,5 @@ public class ScheduleEventMessage {
         String key = "walavo:" + UUID.randomUUID();
 
         publish.sendMessage(convert.writeValueAsString(Map.of("key", key, "value", generateWord)));
-    }
-
-    private String generateRandomLetters() {
-        return IntStream.range(0, 10)
-                .mapToObj(i -> generateWord())
-                .collect(Collectors.joining());
-    }
-
-    private String generateWord() {
-        int rand = new Random().nextInt(52);
-        char start = (rand < 26) ? 'A' : 'a';
-        char charWord = (char) (start + rand % 26);
-        return String.valueOf(charWord);
     }
 }

@@ -27,7 +27,7 @@ public class RedisOperator {
     public Mono<String> getCache(String key) {
         return operationsL
                 .opsForValue()
-                .get(key);
+                .get("walavo:".concat(key));
     }
 
     public Mono<String> createCache(String key, String value) {

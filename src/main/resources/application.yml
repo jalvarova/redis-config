@@ -43,4 +43,4 @@ logging:
           client: DEBUG
 
 schedule:
-  cron: "*/45 * * * * ?"
+  cron: "45 * * * * ?"
