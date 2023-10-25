@@ -2,6 +2,7 @@ package org.redis.manager.rediscache.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.redis.manager.rediscache.exception.NotFoundException;
+import org.redis.manager.rediscache.model.Decision;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.redis.manager.rediscache.redis.RedisOperator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class RedisCacheService {
 
     private static final String PARAMETER_KEY = "key";
     private static final String PARAMETER_KEY_PATTERN = "keyPattern";
+
+    private static final String PARAMETER_DELETE_ALL = "deleteAll";
+
     @Autowired
     private RedisOperator redisOperator;
 
@@ -78,7 +82,8 @@ public class RedisCacheService {
     }
 
     public Mono<String> deleteAllCache(ServerRequest request) {
-        return redisOperator.deleteAllCache();
+        Decision decision = Decision.valueOf(request.queryParam(PARAMETER_DELETE_ALL).get());
+        return redisOperator.deleteAllCache(decision);
     }
 
     public Mono<String> getSizeCache(ServerRequest request) {

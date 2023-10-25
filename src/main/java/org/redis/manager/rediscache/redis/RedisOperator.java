@@ -1,6 +1,7 @@
 package org.redis.manager.rediscache.redis;
 
 import lombok.extern.slf4j.Slf4j;
+import org.redis.manager.rediscache.model.Decision;
 import org.redis.manager.rediscache.model.RedisModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
@@ -80,8 +81,11 @@ public class RedisOperator {
                 .map(key -> RedisModel.builder().key(key).build());
     }
 
-    public Mono<String> deleteAllCache() {
-        return redis.getConnectionFactory().getReactiveConnection().serverCommands().flushAll();
+    public Mono<String> deleteAllCache(Decision decision) {
+        return Mono.just(decision)
+                .filter(condition -> condition.equals(Decision.Y))
+                .flatMap(decision1 -> redis.getConnectionFactory().getReactiveConnection().serverCommands().flushAll().map(s -> "DELETE"))
+                .switchIfEmpty(Mono.just("NO DELETE"));
     }
 
     public Mono<String> getSizeCache() {
