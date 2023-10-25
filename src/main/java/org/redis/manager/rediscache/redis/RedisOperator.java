@@ -72,7 +72,7 @@ public class RedisOperator {
     public Flux<RedisModel> getAllCache(String keyPattern) {
         return operationsL
                 .keys(keyPattern)
-                .flatMap(key -> getCache(key).map(value -> RedisModel.builder().value(value).key(key).build()));
+                .flatMap(key -> getCache(key).map(value -> RedisModel.builder().value(value).key(key.split(":")[1]).build()));
     }
 
     public Flux<RedisModel> getAllKeys(String keyPattern) {
