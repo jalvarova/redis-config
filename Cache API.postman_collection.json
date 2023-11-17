@@ -49,36 +49,6 @@
 			"response": []
 		},
 		{
-			"name": "GET_CACHE",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:9000/api/v1/cache?keyPattern={{KEY_PATTERN}}&key={{KEY}}",
-					"host": [
-						"localhost"
-					],
-					"port": "9000",
-					"path": [
-						"api",
-						"v1",
-						"cache"
-					],
-					"query": [
-						{
-							"key": "keyPattern",
-							"value": "{{KEY_PATTERN}}"
-						},
-						{
-							"key": "key",
-							"value": "{{KEY}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "GET_ALL",
 			"event": [
 				{
@@ -120,6 +90,36 @@
 			"response": []
 		},
 		{
+			"name": "GET_CACHE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9000/api/v1/cache?keyPattern={{KEY_PATTERN}}&key={{KEY}}",
+					"host": [
+						"localhost"
+					],
+					"port": "9000",
+					"path": [
+						"api",
+						"v1",
+						"cache"
+					],
+					"query": [
+						{
+							"key": "keyPattern",
+							"value": "{{KEY_PATTERN}}"
+						},
+						{
+							"key": "key",
+							"value": "{{KEY}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "CREATE",
 			"request": {
 				"method": "POST",
@@ -155,7 +155,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"keyPattern\":\"{{KEY_PATTERN}}\",\n    \"key\":\"{{KEY}}\",\n    \"value\":\"214\"\n}",
+					"raw": "{\n    \"keyPattern\":\"{{KEY_PATTERN}}\",\n    \"key\":\"{{KEY}}\",\n    \"value\":\"214s\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
